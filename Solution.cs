@@ -7,21 +7,21 @@ public class Solution
     private sealed record Point(int index, int edgeTime){}
     private sealed record Step(int index, int timeFromSart){}
 
-    private List<Point>[]? graph;
+    private List<Point>[]? Graph;
     private static readonly int CAN_NOT_BE_REACHED = -1;
 
     public int[] MinimumTime(int numberOfNodes, int[][] edges, int[] disappearTime)
     {
-        initializeGraph(edges, numberOfNodes);
-        return dijkstraSearchForMinTimePath(disappearTime, numberOfNodes);
+        InitializeGraph(edges, numberOfNodes);
+        return DijkstraSearchForMinTimePath(disappearTime, numberOfNodes);
     }
 
-    private void initializeGraph(int[][] edges, int numberOfNodes)
+    private void InitializeGraph(int[][] edges, int numberOfNodes)
     {
-        graph = new List<Point>[numberOfNodes];
+        Graph = new List<Point>[numberOfNodes];
         for (int i = 0; i < numberOfNodes; ++i)
         {
-            graph[i] = new List<Point>();
+            Graph[i] = new List<Point>();
         }
 
         foreach (int[] edge in edges)
@@ -32,13 +32,13 @@ public class Solution
 
             if (from != to)
             {
-                graph[from].Add(new Point(to, time));
-                graph[to].Add(new Point(from, time));
+                Graph[from].Add(new Point(to, time));
+                Graph[to].Add(new Point(from, time));
             }
         }
     }
 
-    private int[] dijkstraSearchForMinTimePath(int[] disappearTime, int numberOfNodes)
+    private int[] DijkstraSearchForMinTimePath(int[] disappearTime, int numberOfNodes)
     {
         PriorityQueue<Step, int> minHeap = new PriorityQueue<Step, int>();
         minHeap.Enqueue(new Step(0, 0), 0);
@@ -55,7 +55,7 @@ public class Solution
                 continue;
             }
 
-            foreach (Point next in graph[current.index])
+            foreach (Point next in Graph[current.index])
             {
                 if (minTime[next.index] > current.timeFromSart + next.edgeTime)
                 {
@@ -65,11 +65,11 @@ public class Solution
             }
         }
 
-        markUnreachableNodes(minTime, disappearTime, numberOfNodes);
+        MarkUnreachableNodes(minTime, disappearTime, numberOfNodes);
         return minTime;
     }
 
-    private void markUnreachableNodes(int[] minTime, int[] disappearTime, int numberOfNodes)
+    private void MarkUnreachableNodes(int[] minTime, int[] disappearTime, int numberOfNodes)
     {
         for (int i = 0; i < numberOfNodes; ++i)
         {
